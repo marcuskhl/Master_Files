@@ -20,5 +20,6 @@ today <- Sys.Date()
 today <- gsub("-", "", as.character(today), fixed = T)
 
 dir.create(file.path("M:/Television and Broadband/INTELLIGENCE/TRAX/Valued/", paste0(today)), showWarnings = FALSE)
-fwrite(TRAX, paste0("M:/Television and Broadband/INTELLIGENCE/TRAX/Valued/", today, "TV_Media_TRAX_", today, ".csv"), row.names = F)
-fwrite(TRAX_error, paste0("M:/Television and Broadband/INTELLIGENCE/TRAX/Valued/", today, "Error.TV_Media_TRAX_", today, ".csv"), row.names = F)
+# fwrite(TRAX, paste0("M:/Television and Broadband/INTELLIGENCE/TRAX/Valued/", today, "TV_Media_TRAX_", today, ".csv"), row.names = F)
+# fwrite(TRAX_error, paste0("M:/Television and Broadband/INTELLIGENCE/TRAX/Valued/", today, "Error.TV_Media_TRAX_", today, ".csv"), row.names = F)
+save.xlsx(paste0("M:/Television and Broadband/INTELLIGENCE/TRAX/Valued/", today, "TV_Media_TRAX_", today, ".xlsx"), TRAX,TRAX_error)
