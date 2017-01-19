@@ -1,7 +1,9 @@
 if(is.na(match(c("devtools"),installed.packages()[,"Package"]))) install.packages(new.packages) else library(devtools)
-suppressMessages(devtools::install_github("marcuskhl/BasicSettings"));suppressMessages(library(BasicSettings))
+suppressMessages(devtools::install_github("marcuskhl/BasicSettings"));library(BasicSettings)
+x <- 60 * 60 * 24 * 2.4 # special 21 Jan Weekend
 
 x <- 60 * 60 * 24 * 1.5 
+# assume the macro trigger is all done in 1.5 days
 Sys.sleep(x) # delay (in seconds)
 
 today <- Sys.Date()+1
@@ -32,39 +34,75 @@ save.xlsx(paste0("M:/Television and Broadband/INTELLIGENCE/TRAX/Valued/", today,
 
 
 
-
 #~~~Master Files Start~~~#
+dir.create(file.path("M:/Television and Broadband/INTELLIGENCE/master files/NEW/Valued/", paste0(today)), showWarnings = FALSE)
+
 name_list <- c("TV_CORE_NEW_MEA", "TV_CORE_NEW_US", "TV_CORE_NEW_AP", "TV_CORE_NEW_EE1", "TV_CORE_NEW_EE2", "TV_CORE_NEW_WE1", "TV_CORE_NEW_WE2", "TV_CORE_NEW_3DIM")
 
 
 
-dir.create(file.path("M:/Television and Broadband/INTELLIGENCE/master files/NEW/Valued/", paste0(today)), showWarnings = FALSE)
-
-
-
-for (i in 1 : length(name_list)){
+for (j in 1 : length(name_list)){
   p1 <- proc.time()
-  wb <- loadWorkbook(paste0("M:/Television and Broadband/INTELLIGENCE/master files/NEW/", name_list[i], ".xlsx"))
-  for (j in 1:length(excel_sheets(paste0("M:/Television and Broadband/INTELLIGENCE/master files/NEW/", name_list[i], ".xlsx")))) {
-    writeComment(wb, j, col = 1, row = 2, comment = c1)
+  sheet_names <- excel_sheets(paste0("M:/Television and Broadband/INTELLIGENCE/master files/NEW/", name_list[j], ".xlsx"))
+  c1 <- createComment(comment = "", visible = F)
+  wb1 <- createWorkbook()
+  for (i in 1 : length(sheet_names)){
+    if(sheet_names[i]=="metadata"){
+      sheet <- readxl::read_excel(paste0("M:/Television and Broadband/INTELLIGENCE/master files/NEW/", name_list[j], ".xlsx"), i, col_names = T)
+    } else{
+      sheet <- readxl::read_excel(paste0("M:/Television and Broadband/INTELLIGENCE/master files/NEW/", name_list[j], ".xlsx"), i, col_names = F)
+      names(sheet) <- "x"
+    }
+    sheet[is.numeric(sheet)&(!is.integer(sheet))] <- round(sheet[is.numeric(sheet)&(!is.integer(sheet))], 3)
+    addWorksheet(wb1, sheetName = sheet_names[i])
+    writeData(wb1, sheet_names[i], sheet)
+    writeComment(wb1, i, col = 1, row = 2, comment = c1)
   }
-  saveWorkbook(wb, paste0("M:/Television and Broadband/INTELLIGENCE/master files/NEW/Valued/", today, name_list[i], ".xlsx"), overwrite = T)
-  print(past0(name_list[i], ".xlsx took ", proc.time()-p1, " seconds."))
-  rm(wb)
+  rm(wb1)
+  saveWorkbook(wb1, paste0("M:/Television and Broadband/INTELLIGENCE/master files/NEW/Valued/", today, name_list[j], ".xlsx"), overwrite = T)
+  print(past0(name_list[j], ".xlsx took ", proc.time()-p1, " seconds."))
 }
-
-#~~~Experimental~~~#
-p1 <- proc.time()
-wb <- loadWorkbook("M:/Television and Broadband/INTELLIGENCE/master files/NEW/TV_CORE_NEW_MEA.xlsx")
-c1 <- createComment(comment = "", visible = F)
-for (j in 1:length(excel_sheets("M:/Television and Broadband/INTELLIGENCE/master files/NEW/TV_CORE_NEW_MEA.xlsx"))) {
-  writeComment(wb, j, col = 1, row = 2, comment = c1)
-}
-
-saveWorkbook(wb, "C:/testing_MEA.xlsx", overwrite = T)
-proc.time()-p1
-#~~~Experimental~~~#
 #~~~Master Files End~~~#
+
+
+
+#~~~Experimental~~~#
+# p1 <- proc.time()
+# wb <- loadWorkbook("M:/Television and Broadband/INTELLIGENCE/master files/NEW/TV_CORE_NEW_MEA.xlsx")
+# 
+# 
+# 
+# if(is.na(match(c("devtools"),installed.packages()[,"Package"]))) install.packages(new.packages) else library(devtools)
+# suppressMessages(devtools::install_github("marcuskhl/BasicSettings"));library(BasicSettings)
+# sheet_names <- excel_sheets("M:/Television and Broadband/INTELLIGENCE/master files/NEW/TV_CORE_NEW_MEA.xlsx")
+# c1 <- createComment(comment = "", visible = F)
+# wb1 <- createWorkbook()
+# for (i in 1 : length(sheet_names)){
+#   if(sheet_names[i]=="metadata"){
+#     sheet <- readxl::read_excel("M:/Television and Broadband/INTELLIGENCE/master files/NEW/TV_CORE_NEW_MEA.xlsx", i, col_names = T)
+#   } else{
+#     sheet <- readxl::read_excel("M:/Television and Broadband/INTELLIGENCE/master files/NEW/TV_CORE_NEW_MEA.xlsx", i, col_names = F)
+#     names(sheet) <- "x"
+#   }
+#   sheet[is.numeric(sheet)&(!is.integer(sheet))] <- round(sheet[is.numeric(sheet)&(!is.integer(sheet))], 3)
+#   addWorksheet(wb1,sheetName = sheet_names[i])
+#   writeData(wb1, sheet_names[i], sheet)
+#   # writeComment(wb1, i, col = 1, row = 2, comment = c1)
+# }
+# saveWorkbook(wb1, "C:/testing_MEA.xlsx", overwrite = T)
+# rm(wb1)
+# 
+# 
+# writeData(wb1, "test1", sheet)
+# writeComment(wb1, 1, col = 1, row = 2, comment = c1)
+# saveWorkbook(wb1, "C:/testing_MEA.xlsx", overwrite = T)
+# for (j in 1:length(excel_sheets("M:/Television and Broadband/INTELLIGENCE/master files/NEW/TV_CORE_NEW_MEA.xlsx"))) {
+#   writeComment(wb, j, col = 1, row = 2, comment = c1)
+# }
+# 
+# saveWorkbook(wb, "C:/testing_MEA.xlsx", overwrite = T)
+# proc.time()-p1
+#~~~Experimental~~~#
 
 
 
