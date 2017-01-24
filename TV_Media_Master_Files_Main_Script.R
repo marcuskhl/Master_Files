@@ -4,7 +4,7 @@ suppressMessages(devtools::install_github("marcuskhl/BasicSettings"));library(Ba
 # 
 # x <- 60 * 60 * 24 * 1.5 
 # assume the macro trigger is all done in 1.5 days
-Sys.sleep(x) # delay (in seconds)
+# Sys.sleep(x) # delay (in seconds)
 
 today <- Sys.Date()+1
 today <- gsub("-", "", as.character(today), fixed = T)
@@ -23,13 +23,15 @@ TRAX_error <- TRAX[rowSums(is.na(TRAX[15:length(names(TRAX))])) == 1 | rowSums(i
 TRAX <- TRAX[rowSums(is.na(TRAX[15:length(names(TRAX))])) != 1, ]
 TRAX <- TRAX[rowSums(is.na(TRAX[15:length(names(TRAX))])) != 2, ] 
 # rounding to 4 digits
+TRAX[,grepl("(A)", names(TRAX), fixed = T)] <- sapply( TRAX[,grepl("(A)", names(TRAX), fixed = T)], as.numeric)
+TRAX[,grepl("(F)", names(TRAX), fixed = T)] <- sapply( TRAX[,grepl("(F)", names(TRAX), fixed = T)], as.numeric)
 is.num <- sapply(TRAX, is.numeric)
 TRAX[is.num] <- lapply(TRAX[is.num], round, 4)
 
 dir.create(file.path("M:/Television and Broadband/INTELLIGENCE/TRAX/Valued/", paste0(today)), showWarnings = FALSE)
 # fwrite(TRAX, paste0("M:/Television and Broadband/INTELLIGENCE/TRAX/Valued/", today, "TV_Media_TRAX_", today, ".csv"), row.names = F)
 # fwrite(TRAX_error, paste0("M:/Television and Broadband/INTELLIGENCE/TRAX/Valued/", today, "Error.TV_Media_TRAX_", today, ".csv"), row.names = F)
-save.xlsx(paste0("M:/Television and Broadband/INTELLIGENCE/TRAX/Valued/", today, "TV_Media_TRAX_", today, ".xlsx"), TRAX, TRAX_error)
+save.xlsx(paste0("M:/Television and Broadband/INTELLIGENCE/TRAX/Valued/", today, "/TV_Media_TRAX_", today, ".xlsx"), TRAX, TRAX_error)
 #~~~TRAX End~~~#
 
 
