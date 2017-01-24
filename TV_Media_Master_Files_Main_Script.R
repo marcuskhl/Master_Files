@@ -1,10 +1,10 @@
 if(is.na(match(c("devtools"),installed.packages()[,"Package"]))) install.packages(new.packages) else library(devtools)
 suppressMessages(devtools::install_github("marcuskhl/BasicSettings"));library(BasicSettings)
 # x <- 60 * 60 * 24 * 2.4 # special 21 Jan Weekend
-
+# 
 # x <- 60 * 60 * 24 * 1.5 
 # assume the macro trigger is all done in 1.5 days
-# Sys.sleep(x) # delay (in seconds)
+Sys.sleep(x) # delay (in seconds)
 
 today <- Sys.Date()+1
 today <- gsub("-", "", as.character(today), fixed = T)
@@ -23,8 +23,6 @@ TRAX_error <- TRAX[rowSums(is.na(TRAX[15:length(names(TRAX))])) == 1 | rowSums(i
 TRAX <- TRAX[rowSums(is.na(TRAX[15:length(names(TRAX))])) != 1, ]
 TRAX <- TRAX[rowSums(is.na(TRAX[15:length(names(TRAX))])) != 2, ] 
 # rounding to 4 digits
-TRAX[,grepl("(A)", names(TRAX), fixed = T)] <- sapply(TRAX[,grepl("(A)", names(TRAX), fixed = T)], as.numeric)
-TRAX[,grepl("(F)", names(TRAX), fixed = T)] <- sapply(TRAX[,grepl("(F)", names(TRAX), fixed = T)], as.numeric)
 is.num <- sapply(TRAX, is.numeric)
 TRAX[is.num] <- lapply(TRAX[is.num], round, 4)
 
